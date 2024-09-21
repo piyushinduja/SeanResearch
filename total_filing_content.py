@@ -210,32 +210,30 @@ for cik, date, link in tqdm(main1):
       dataset.append([cik, item, date[:4], section_wc, section_sc, section_fli, section_long_horizon, section_short_horizon, section_sentiment, section_sentiment_score, section_cleaned_text])
 
 dataset_df = pd.DataFrame(dataset, columns=['CIK', 'Item', 'Year', 'Word Count', 'Sentence Count', 'Forward Looking Intensity', 'Long Horizon Intensity', 'Short Horizon Intensity', 'Sentiment', 'Sentiment Score', 'Section Content'])
-print(len(dataset_df))
-dataset_df
+print('Number of rows:', len(dataset_df))
+dataset_df.to_excel('output.xlsx')
 
-from transformers import pipeline
+# from transformers import pipeline
 
-emotion_classifier = pipeline('sentiment-analysis', model='bhadresh-savani/distilbert-base-uncased-emotion')
-text = "ITEM 12. SECURITY OWNERSHIP OF CERTAIN BENEFICIAL OWNERS AND MANAGEMENT There is hereby incorporated by reference the information to appear under the caption Principal Stockholders in Holdings definitive proxy statement for its 1994 Annual Meeting of Stockholders. All issued and outstanding shares of AMI Common Stock are owned by Holdings."
-emotion = emotion_classifier(text)
-print(emotion)
+# emotion_classifier = pipeline('sentiment-analysis', model='bhadresh-savani/distilbert-base-uncased-emotion')
+# text = "ITEM 12. SECURITY OWNERSHIP OF CERTAIN BENEFICIAL OWNERS AND MANAGEMENT There is hereby incorporated by reference the information to appear under the caption Principal Stockholders in Holdings definitive proxy statement for its 1994 Annual Meeting of Stockholders. All issued and outstanding shares of AMI Common Stock are owned by Holdings."
+# emotion = emotion_classifier(text)
+# print(emotion)
 
-def sent_count(text):
-  section_sc = len(sent_tokenize(text))
-  return section_sc
+# def sent_count(text):
+#   section_sc = len(sent_tokenize(text))
+#   return section_sc
 
-print(ans)
+# import matplotlib.pyplot as plt
 
-import matplotlib.pyplot as plt
+# for data in ans:
+#   items = list(data.keys())
+#   counts = list(data.values())
 
-for data in ans:
-  items = list(data.keys())
-  counts = list(data.values())
+#   fig = plt.figure(figsize = (10, 5))
+#   plt.bar(items, counts, width = 0.4)
 
-  fig = plt.figure(figsize = (10, 5))
-  plt.bar(items, counts, width = 0.4)
-
-  plt.xlabel("Items")
-  plt.ylabel("Word Count")
-  plt.show()
+#   plt.xlabel("Items")
+#   plt.ylabel("Word Count")
+#   plt.show()
 
