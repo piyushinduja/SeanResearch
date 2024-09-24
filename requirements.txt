@@ -1,0 +1,11 @@
+tqdm
+numpy
+datetime
+requests
+pandas
+bs4
+sec_api
+nltk
+spacy
+textblob
+openpyxl
