@@ -7,7 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/11z5NqT8pD5GT89U4FepNlHurVnLe8LWx
 """
 
-!pip install sec_api
+# !pip install sec_api
 
 import datetime
 import time
