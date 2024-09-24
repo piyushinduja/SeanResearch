@@ -42,32 +42,38 @@ output_dir = os.getcwd() # Make sure to give path in the following pattern: C:\U
 
 extractorApi = ExtractorApi("2b81445ea2ba1eb88b9d2c9b90831c26c20caa66a218b6ff7f7852cf9a0ebebd")
 
-current_quarter = (datetime.date.today().month - 1) // 3 + 1
-years = list(range(START_YEAR, END_YEAR+1))
-quarters = ['QTR1', 'QTR2', 'QTR3', 'QTR4']
-history = [(y, q) for y in years for q in quarters]
-for i in range(1, current_quarter + 1):
-    history.append((END_YEAR, 'QTR%d' % i))
-urls = ['https://www.sec.gov/Archives/edgar/full-index/%d/%s/crawler.idx' % (x[0], x[1]) for x in history]
-urls.sort()
+urlsPresent = os.path.isfile(os.path.join('./', 'urls_df.csv'))
 
-rows = []
-for url in tqdm(urls):
-    lines = requests.get(url, headers = headers).text.splitlines()
-    for line in range(9, len(lines)):
-        row = lines[line].split('  ')
-        row = [i.strip() for i in row if i]
-        if CIKS:  # Checking for required CIKs
-            if row[1] == '10-K' and row[2] in CIKS:
-                rows.append(row[:5])
-        else:
-            if row[1] == '10-K':
-                rows.append(row[:5])
-    time.sleep(.15)
+if urlsPresent:
+  df = pd.read_csv('urls_df.csv')
+else:
+  current_quarter = (datetime.date.today().month - 1) // 3 + 1
+  years = list(range(START_YEAR, END_YEAR+1))
+  quarters = ['QTR1', 'QTR2', 'QTR3', 'QTR4']
+  history = [(y, q) for y in years for q in quarters]
+  for i in range(1, current_quarter + 1):
+      history.append((END_YEAR, 'QTR%d' % i))
+  urls = ['https://www.sec.gov/Archives/edgar/full-index/%d/%s/crawler.idx' % (x[0], x[1]) for x in history]
+  urls.sort()
+
+  rows = []
+  for url in tqdm(urls):
+      lines = requests.get(url, headers = headers).text.splitlines()
+      for line in range(9, len(lines)):
+          row = lines[line].split('  ')
+          row = [i.strip() for i in row if i]
+          if CIKS:  # Checking for required CIKs
+              if row[1] == '10-K' and row[2] in CIKS:
+                  rows.append(row[:5])
+          else:
+              if row[1] == '10-K':
+                  rows.append(row[:5])
+      time.sleep(.15)
 
 
-cols = ['C_Name', 'F_type', 'CIK', 'Date_Filed', 'URL']
-df = pd.DataFrame(rows, columns=cols)
+  cols = ['C_Name', 'F_type', 'CIK', 'Date_Filed', 'URL']
+  df = pd.DataFrame(rows, columns=cols)
+  df.to_csv('urls_df.csv')
 print("Total Forms: ", len(df))
 
 empty_forms = []
